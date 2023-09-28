@@ -9,26 +9,31 @@ function Login(){
         password: ''
 
     })
+    
     const navigate = useNavigate();
     const [errors, setErrors] = useState({}) 
     const handleInput = (event) => {
         setValues(prev =>({ ...prev, [event.target.name]: [event.target.value]}))
     }
-    const handleSubmit =(event) => { 
+    const handleSubmit = (event) => {
         event.preventDefault();
         setErrors(Validation(values));
-        if(errors.email === "" && errors.password === ""){
+        if (errors.email === "" && errors.password === "") {
             axios.post('http://localhost:8081/login', values)
-            .then(res => {
-                if(res.data === "Succes"){
-                    navigate('/home')
-                }else{
-                    alert("Usuario no registrado")
-                }
-            })
-            .catch(err => console.log(err));
+                .then(res => {
+                    if (res.data.status === "Success") {
+                        // Almacenar el idUsuario en el estado o donde sea necesario
+                        const idUsuario = res.data.idUsuario;
+                        // Navegar a la página 'home' y pasar el idUsuario
+                        navigate('/home', { state: { idUsuario } });
+                    } else {
+                        alert("Usuario no registrado");
+                    }
+                })
+                .catch(err => console.log(err));
         }
     }
+    
     
     return(
         <div className='d-flex justify-content-center align-items-center bg-primary vh-100 custom-bg'>
